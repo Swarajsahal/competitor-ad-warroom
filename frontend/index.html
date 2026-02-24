@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Competitor Ad War Room — Mosaic Wellness</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <!-- SCANLINE OVERLAY -->
+  <div class="scanline"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-mark">⬛</div>
+      <div class="logo-text">
+        <span class="logo-title">WAR ROOM</span>
+        <span class="logo-sub">Competitive Intelligence</span>
+      </div>
+    </div>
+
+    <div class="brand-selector">
+      <div class="selector-label">BRAND INTEL</div>
+      <div class="brand-list" id="brandList"></div>
+    </div>
+
+    <nav class="nav-links">
+      <a class="nav-item active" data-view="dashboard" href="#">
+        <span class="nav-icon">◈</span> Dashboard
+      </a>
+      <a class="nav-item" data-view="ads" href="#">
+        <span class="nav-icon">◉</span> Ad Feed
+      </a>
+      <a class="nav-item" data-view="insights" href="#">
+        <span class="nav-icon">◆</span> AI Insights
+      </a>
+      <a class="nav-item" data-view="brief" href="#">
+        <span class="nav-icon">◎</span> Weekly Brief
+      </a>
+      <a class="nav-item" data-view="competitors" href="#">
+        <span class="nav-icon">◇</span> Competitors
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="btn-refresh" id="btnFetch" onclick="fetchAds()">
+        <span class="btn-icon">↻</span> Refresh Data
+      </button>
+      <div class="last-updated" id="lastUpdated">Ready</div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main" id="main">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="breadcrumb" id="breadcrumb">Dashboard</div>
+        <div class="status-dot" id="statusDot"></div>
+        <span class="status-text" id="statusText">Live</span>
+      </div>
+      <div class="topbar-right">
+        <div class="filter-group" id="filterGroup">
+          <select class="filter-select" id="filterMediaType" onchange="applyFilters()">
+            <option value="">All Formats</option>
+            <option value="IMAGE">Image</option>
+            <option value="VIDEO">Video</option>
+            <option value="CAROUSEL">Carousel</option>
+          </select>
+          <select class="filter-select" id="filterTheme" onchange="applyFilters()">
+            <option value="">All Themes</option>
+            <option value="ugc_testimonial">UGC / Testimonial</option>
+            <option value="doctor_authority">Doctor Authority</option>
+            <option value="offer_promo">Offer / Promo</option>
+            <option value="ingredient_science">Ingredient Science</option>
+            <option value="community_story">Community Story</option>
+            <option value="before_after">Before / After</option>
+            <option value="parent_reassurance">Parent Reassurance</option>
+          </select>
+          <select class="filter-select" id="filterActive" onchange="applyFilters()">
+            <option value="">All Status</option>
+            <option value="true">Active</option>
+            <option value="false">Stopped</option>
+          </select>
+          <select class="filter-select" id="filterDays" onchange="applyFilters()">
+            <option value="">All Time</option>
+            <option value="7">Last 7 days</option>
+            <option value="30">Last 30 days</option>
+            <option value="90">Last 90 days</option>
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <!-- VIEWS -->
+
+    <!-- DASHBOARD VIEW -->
+    <div class="view active" id="view-dashboard">
+      <div class="view-header">
+        <h1 class="view-title">Intelligence Overview</h1>
+        <p class="view-sub" id="dashSubtitle">Tracking competitor ads across all Mosaic brands</p>
+      </div>
+
+      <!-- KPI CARDS -->
+      <div class="kpi-grid" id="kpiGrid"></div>
+
+      <!-- CHARTS ROW -->
+      <div class="charts-row">
+        <div class="chart-card" id="chartMediaCard">
+          <div class="chart-header">
+            <span class="chart-title">FORMAT DISTRIBUTION</span>
+            <span class="chart-badge" id="chartMediaBadge"></span>
+          </div>
+          <canvas id="chartMedia"></canvas>
+        </div>
+        <div class="chart-card" id="chartThemeCard">
+          <div class="chart-header">
+            <span class="chart-title">MESSAGE THEMES</span>
+            <span class="chart-badge" id="chartThemeBadge"></span>
+          </div>
+          <canvas id="chartTheme"></canvas>
+        </div>
+        <div class="chart-card chart-card--wide" id="chartCompCard">
+          <div class="chart-header">
+            <span class="chart-title">COMPETITOR ACTIVITY</span>
+            <span class="chart-badge" id="chartCompBadge"></span>
+          </div>
+          <canvas id="chartComp"></canvas>
+        </div>
+      </div>
+
+      <!-- TOP PERFORMERS -->
+      <div class="section-header">
+        <h2 class="section-title">⚡ TOP PERFORMER ADS</h2>
+        <span class="section-sub">Running 30+ days — competitors' proven winners</span>
+      </div>
+      <div class="ad-grid" id="topPerformersGrid"></div>
+    </div>
+
+    <!-- AD FEED VIEW -->
+    <div class="view" id="view-ads">
+      <div class="view-header">
+        <h1 class="view-title">Ad Intelligence Feed</h1>
+        <p class="view-sub" id="adFeedSubtitle">All competitor ads with real-time filters</p>
+      </div>
+      <div class="ad-grid" id="adFeedGrid"></div>
+      <div class="load-more" id="loadMoreBtn" onclick="loadMoreAds()">Load More</div>
+    </div>
+
+    <!-- AI INSIGHTS VIEW -->
+    <div class="view" id="view-insights">
+      <div class="view-header">
+        <h1 class="view-title">AI Intelligence Layer</h1>
+        <p class="view-sub">Machine-generated competitive insights — specific, actionable, surprising</p>
+      </div>
+      <div class="insights-grid" id="insightsGrid"></div>
+    </div>
+
+    <!-- WEEKLY BRIEF VIEW -->
+    <div class="view" id="view-brief">
+      <div class="view-header">
+        <h1 class="view-title">Weekly Intel Brief</h1>
+        <p class="view-sub">The summary your marketing team actually reads on Monday morning</p>
+      </div>
+      <div class="brief-controls">
+        <button class="btn-generate" id="btnGenerateBrief" onclick="generateBrief()">
+          ◆ Generate This Week's Brief
+        </button>
+        <span class="brief-timestamp" id="briefTimestamp"></span>
+      </div>
+      <div class="brief-container" id="briefContainer">
+        <div class="brief-placeholder">
+          <div class="placeholder-icon">◎</div>
+          <p>Select a brand and click "Generate Brief" to create your weekly intelligence report.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPETITORS VIEW -->
+    <div class="view" id="view-competitors">
+      <div class="view-header">
+        <h1 class="view-title">Competitor Intelligence Map</h1>
+        <p class="view-sub">Researched and justified competitors for each Mosaic brand</p>
+      </div>
+      <div class="competitors-grid" id="competitorsGrid"></div>
+    </div>
+
+  </main>
+
+  <!-- TOAST NOTIFICATIONS -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- LOADING OVERLAY -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <div class="loading-text" id="loadingText">Fetching intelligence...</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@9.1.6/marked.min.js"></script>
+  <script src="/static/dashboard.js"></script>
+</body>
+</html>

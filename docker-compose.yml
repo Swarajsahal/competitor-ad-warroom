@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  warroom:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - META_ACCESS_TOKEN=${META_ACCESS_TOKEN:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - AI_PROVIDER=${AI_PROVIDER:-openai}
+      - DB_PATH=/data/warroom.db
+    volumes:
+      - warroom_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  warroom_data:
